@@ -1,8 +1,16 @@
 from flask import Flask, render_template, url_for, request, redirect, flash
 from flask import current_app, g
+import logging
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '2AZMss3p5QPbcY2hBs'
+
+app.logger.setLevel(logging.DEBUG)
+app.logger.critical("Critical")
+app.logger.error("Error")
+app.logger.warning("Warning")
+app.logger.info("Info")
+app.logger.debug("Debug")
 
 @app.route('/')
 def index():
