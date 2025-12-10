@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, render_template, url_for, request, redirect, flash
 from flask import current_app, g
 
 app = Flask(__name__)
@@ -29,7 +29,22 @@ def contact_complete():
         email = request.form["email"]
         description = request.form["description"]
         print(username, email, description, sep='\n')
+        # validation
+        is_valid = True
+        if not username:
+            flash("사용자명을 입력해주세요.")
+            is_valid = False
+        if not email:
+            flash("메일주소를 입력해주세요.")
+            is_valid = False
+        if not description:
+            flash("문의 내용을 입력해주세요.")
+            is_valid = False
+        if not is_valid:
+            return redirect(url_for("contact"))
+        # send email
         # redirect to contact end-point
+        flash("문의가 완료되었습니다.")
         return redirect(url_for("contact_complete"))
     return render_template("contact_complete.html")
 
