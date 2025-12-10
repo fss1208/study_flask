@@ -2,10 +2,19 @@ from flask import Flask, render_template, url_for, request, redirect, flash, cur
 from flask_debugtoolbar import DebugToolbarExtension
 import logging
 
+from email_validator import validate_email, EmailNotValidError
+from flask_mail import Mail, Message
+import os
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '2AZMss3p5QPbcY2hBs'
+
+############################################################################################################
+
 app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = False
 toolbar = DebugToolbarExtension(app)
+
+############################################################################################################
 
 app.logger.setLevel(logging.DEBUG)
 app.logger.critical("Critical")
@@ -13,6 +22,24 @@ app.logger.error("Error")
 app.logger.warning("Warning")
 app.logger.info("Info")
 app.logger.debug("Debug")
+
+############################################################################################################
+
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'ksh.dev.91@gmail.com'
+app.config['MAIL_PASSWORD'] = 'nzsk eqyg nrdc fmxq'
+app.config['MAIL_DEFAULT_SENDER'] = 'flaskbook <ksh.dev.91@gmail.com>'
+mail = Mail(app)
+
+def send_email(to, subject, template, **kwargs):
+    msg = Message(subject, recipients=[to])
+    msg.body = render_template(template + ".txt", **kwargs)
+    msg.html = render_template(template + ".html", **kwargs)
+    mail.send(msg)
+
+############################################################################################################
 
 @app.route('/')
 def index():
@@ -26,7 +53,7 @@ def hello(name):
 def show_name(name):
     return f'Hello, {name}!'
 
-###########################################################################
+############################################################################################################
 
 @app.route("/contact")
 def contact():
@@ -47,18 +74,24 @@ def contact_complete():
         if not email:
             flash("메일주소를 입력해주세요.")
             is_valid = False
+        try:
+            validate_email(email)
+        except EmailNotValidError:
+            flash("메일주소가 올바르지 않습니다.")
+            is_valid = False
         if not description:
             flash("문의 내용을 입력해주세요.")
             is_valid = False
         if not is_valid:
             return redirect(url_for("contact"))
         # send email
+        send_email(email, "문의 완료", "contact_mail", username=username, description=description)
         # redirect to contact end-point
         flash("문의가 완료되었습니다.")
         return redirect(url_for("contact_complete"))
     return render_template("contact_complete.html")
 
-###########################################################################
+############################################################################################################
 
 with app.test_request_context("/users?updated=true"):
     print(url_for('index'))
