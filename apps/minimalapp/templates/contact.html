@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>contact</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <h2>문의하기</h2>
+    <form action="{{ url_for('contact_complete') }}" method="POST" novalidate="novalidate">
+        <table>
+            <tr>
+                <td>사용자명</td>
+                <td>
+                    <input type="text" name="username" value="{{ username }}" placeholder="사용자명" />
+                </td>
+            </tr>
+            <tr>
+                <td>메일주소</td>
+                <td>
+                    <input type="email" name="email" value="{{ email }}" placeholder="메일주소" />
+                </td>
+            </tr>
+            <tr>
+                <td>문의 내용</td>
+                <td>
+                    <textarea name="description" placeholder="문의 내용">{{ description }}</textarea>
+                </td>
+            </tr>
+        </table>
+        <input type="submit" value="문의하기" />
+    </form>
+</body>
+
+</html>

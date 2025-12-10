@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <title>Name</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
@@ -13,8 +14,8 @@
     <h1>Name : Guest</h1>
     {% endif %}
     <ul>
-        {% for user in users %}
-        <li><a href="{{ user.url }}">{{ user.name }}</a></li>
+        {% for i in range(3) %}
+        <li>{{ i + 1 }}</li>
         {% endfor %}
     </ul>
 </body>
