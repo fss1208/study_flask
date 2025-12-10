@@ -1,9 +1,11 @@
-from flask import Flask, render_template, url_for, request, redirect, flash
-from flask import current_app, g
+from flask import Flask, render_template, url_for, request, redirect, flash, current_app, g
+from flask_debugtoolbar import DebugToolbarExtension
 import logging
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '2AZMss3p5QPbcY2hBs'
+app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = False
+toolbar = DebugToolbarExtension(app)
 
 app.logger.setLevel(logging.DEBUG)
 app.logger.critical("Critical")
