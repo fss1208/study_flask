@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, make_response, redirect, flash, current_app, g
+from flask import Flask, render_template, url_for, request, make_response, session, redirect, flash, current_app, g
 from flask_debugtoolbar import DebugToolbarExtension
 import logging
 
@@ -59,6 +59,7 @@ def show_name(name):
 def contact():
     response = make_response(render_template('contact.html'))
     response.set_cookie("flaskbook", "ksh")
+    session["username"] = "shkim"
     return response
 
 @app.route("/contact/complete", methods=["GET", "POST"])
@@ -91,6 +92,7 @@ def contact_complete():
         # redirect to contact end-point
         flash("문의가 완료되었습니다.")
         return redirect(url_for("contact_complete"))
+    print("session", session["username"], sep=" = ")
     print("cookies", request.cookies.get("flaskbook"), sep=" = ")
     return render_template("contact_complete.html")
 
