@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>파일서버</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="brand">
+                <span class="folder-icon">📂</span>
+                <h1>FileServer</h1>
+            </div>
+        </header>
+
+        <div class="info-bar">
+            <h3 class="path">폴더: {{ folder_path }}</h3>
+            <div class="actions">
+                <button class="icon-btn">↑</button>
+                <button class="icon-btn">↓</button>
+            </div>
+        </div>
+
+        <div class="controls">
+            <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+                <input type="file" name="selected_file">
+                <input type="submit" value="업로드" style="padding: 1px 10px; cursor: pointer;">
+            </form>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="flashes">
+            {% for message in messages %}
+            <p class="flash">{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <table class="file-table">
+            <thead>
+                <tr>
+                    <th style="width: 50px;"></th> <!-- Icon column -->
+                    <th>이름</th>
+                    <th style="width: 100px; text-align: center;"></th> <!-- Delete column -->
+                    <th>만든 날짜</th>
+                    <th>마지막으로 수정한 날짜</th>
+                    <th>파일 크기</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if files %}
+                {% for file in files %}
+                <tr>
+                    <td class="icon-cell">
+                        <span class="file-type type-{{ file.type }}">{{ file.type }}</span>
+                    </td>
+                    <td class="name-cell">{{ file.name }}</td>
+                    <td class="action-cell">
+                        <a href="{{ url_for('delete', filename=file.name) }}" class="delete-link">[삭제]</a>
+                    </td>
+                    <td class="date-cell">{{ file.ctime }}</td>
+                    <td class="date-cell">{{ file.mtime }}</td>
+                    <td class="size-cell">{{ file.size }}</td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
